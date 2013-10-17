@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms Simple Add-On
 Plugin URI: http://www.gravityforms.com
 Description: A simple add-on to demonstrate the use of the Add-On Framework
-Version: 1.0
+Version: 1.1
 Author: Rocketgenius
 Author URI: http://www.rocketgenius.com
 
@@ -32,13 +32,29 @@ if (class_exists("GFForms")) {
 
     class GFSimpleAddOn extends GFAddOn {
 
-        protected $_version = "1.0";
+        protected $_version = "1.1";
         protected $_min_gravityforms_version = "1.7.9999";
         protected $_slug = "simpleaddon";
         protected $_path = "asimpleaddon/asimpleaddon.php";
         protected $_full_path = __FILE__;
         protected $_title = "Gravity Forms Simple Add-On";
         protected $_short_title = "Simple Add-On";
+
+        public function init(){
+            parent::init();
+            add_filter("gform_submit_button", array($this, "form_submit_button"), 10, 2);
+        }
+
+        // Add the text in the plugin settings to the bottom of the form if enabled for this form
+        function form_submit_button($button, $form){
+            $settings = $this->get_form_settings($form);
+            if(isset($settings["enabled"]) && true == $settings["enabled"]){
+                $text = $this->get_plugin_setting("mytextbox");
+                $button = "<div>{$text}</div>" . $button;
+            }
+            return $button;
+        }
+
 
         public function plugin_page() {
             ?>
@@ -201,7 +217,7 @@ if (class_exists("GFForms")) {
                     "title"  => "Simple Add-On Settings",
                     "fields" => array(
                         array(
-                            "name"    => "textbox",
+                            "name"    => "mytextbox",
                             "tooltip" => "This is the tooltip",
                             "label"   => "This is the label",
                             "type"    => "text",
@@ -250,6 +266,8 @@ if (class_exists("GFForms")) {
 
             return array_merge(parent::styles(), $styles);
         }
+
+
 
     }
 
