@@ -159,7 +159,8 @@ if (class_exists("GFForms")) {
                             "type"    => "text",
                             "name"    => "mytext",
                             "tooltip" => "This is the tooltip",
-                            "class"   => "medium"
+                            "class"   => "medium",
+                            "feedback_callback" => array($this, "is_valid_setting")
                         ),
                         array(
                             "label"   => "My Text Area",
@@ -221,11 +222,16 @@ if (class_exists("GFForms")) {
                             "tooltip" => "This is the tooltip",
                             "label"   => "This is the label",
                             "type"    => "text",
-                            "class"   => "small"
+                            "class"   => "small",
+                            "feedback_callback" => array($this, "is_valid_setting")
                         )
                     )
                 )
             );
+        }
+
+        public function is_valid_setting($value){
+            return strlen($value) < 10;
         }
 
         public function scripts() {
