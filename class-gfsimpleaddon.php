@@ -116,9 +116,7 @@ class GFSimpleAddOn extends GFAddOn {
 	 * Creates a custom page for this add-on.
 	 */
 	public function plugin_page() {
-		?>
-		This page appears in the Forms menu
-		<?php
+		echo 'This page appears in the Forms menu';
 	}
 
 	/**
@@ -137,7 +135,7 @@ class GFSimpleAddOn extends GFAddOn {
 						'label'             => esc_html__( 'This is the label', 'simpleaddon' ),
 						'type'              => 'text',
 						'class'             => 'small',
-						'feedback_callback' => array( $this, 'is_valid_setting' )
+						'feedback_callback' => array( $this, 'is_valid_setting' ),
 					)
 				)
 			)
@@ -162,9 +160,9 @@ class GFSimpleAddOn extends GFAddOn {
 						'choices' => array(
 							array(
 								'label' => esc_html__( 'Enabled', 'simpleaddon' ),
-								'name'  => 'enabled'
-							)
-						)
+								'name'  => 'enabled',
+							),
+						),
 					),
 					array(
 						'label'   => esc_html__( 'My checkboxes', 'simpleaddon' ),
@@ -174,17 +172,17 @@ class GFSimpleAddOn extends GFAddOn {
 						'choices' => array(
 							array(
 								'label' => esc_html__( 'First Choice', 'simpleaddon' ),
-								'name'  => 'first'
+								'name'  => 'first',
 							),
 							array(
 								'label' => esc_html__( 'Second Choice', 'simpleaddon' ),
-								'name'  => 'second'
+								'name'  => 'second',
 							),
 							array(
 								'label' => esc_html__( 'Third Choice', 'simpleaddon' ),
-								'name'  => 'third'
-							)
-						)
+								'name'  => 'third',
+							),
+						),
 					),
 					array(
 						'label'   => esc_html__( 'My Radio Buttons', 'simpleaddon' ),
@@ -200,8 +198,8 @@ class GFSimpleAddOn extends GFAddOn {
 							),
 							array(
 								'label' => esc_html__( 'Third Choice', 'simpleaddon' ),
-							)
-						)
+							),
+						),
 					),
 					array(
 						'label'      => esc_html__( 'My Horizontal Radio Buttons', 'simpleaddon' ),
@@ -218,8 +216,8 @@ class GFSimpleAddOn extends GFAddOn {
 							),
 							array(
 								'label' => esc_html__( 'Third Choice', 'simpleaddon' ),
-							)
-						)
+							),
+						),
 					),
 					array(
 						'label'   => esc_html__( 'My Dropdown', 'simpleaddon' ),
@@ -229,17 +227,17 @@ class GFSimpleAddOn extends GFAddOn {
 						'choices' => array(
 							array(
 								'label' => esc_html__( 'First Choice', 'simpleaddon' ),
-								'value' => 'first'
+								'value' => 'first',
 							),
 							array(
 								'label' => esc_html__( 'Second Choice', 'simpleaddon' ),
-								'value' => 'second'
+								'value' => 'second',
 							),
 							array(
 								'label' => esc_html__( 'Third Choice', 'simpleaddon' ),
-								'value' => 'third'
-							)
-						)
+								'value' => 'third',
+							),
+						),
 					),
 					array(
 						'label'             => esc_html__( 'My Text Box', 'simpleaddon' ),
@@ -247,27 +245,45 @@ class GFSimpleAddOn extends GFAddOn {
 						'name'              => 'mytext',
 						'tooltip'           => esc_html__( 'This is the tooltip', 'simpleaddon' ),
 						'class'             => 'medium',
-						'feedback_callback' => array( $this, 'is_valid_setting' )
+						'feedback_callback' => array( $this, 'is_valid_setting' ),
 					),
 					array(
 						'label'   => esc_html__( 'My Text Area', 'simpleaddon' ),
 						'type'    => 'textarea',
 						'name'    => 'mytextarea',
 						'tooltip' => esc_html__( 'This is the tooltip', 'simpleaddon' ),
-						'class'   => 'medium merge-tag-support mt-position-right'
+						'class'   => 'medium merge-tag-support mt-position-right',
 					),
 					array(
 						'label' => esc_html__( 'My Hidden Field', 'simpleaddon' ),
 						'type'  => 'hidden',
-						'name'  => 'myhidden'
+						'name'  => 'myhidden',
 					),
 					array(
 						'label' => esc_html__( 'My Custom Field', 'simpleaddon' ),
 						'type'  => 'my_custom_field_type',
-						'name'  => 'my_custom_field'
-					)
-				)
-			)
+						'name'  => 'my_custom_field',
+						'args'  => array(
+							'text'     => array(
+								'label'         => esc_html__( 'A textbox sub-field', 'simpleaddon' ),
+								'name'          => 'subtext',
+								'default_value' => 'change me',
+							),
+							'checkbox' => array(
+								'label'   => esc_html__( 'A checkbox sub-field', 'simpleaddon' ),
+								'name'    => 'my_custom_field_check',
+								'choices' => array(
+									array(
+										'label'         => esc_html__( 'Activate', 'simpleaddon' ),
+										'name'          => 'subcheck',
+										'default_value' => true,
+									),
+								),
+							),
+						),
+					),
+				),
+			),
 		);
 	}
 
@@ -279,26 +295,14 @@ class GFSimpleAddOn extends GFAddOn {
 	 */
 	public function settings_my_custom_field_type( $field, $echo = true ) {
 		echo '<div>' . esc_html__( 'My custom field contains a few settings:', 'simpleaddon' ) . '</div>';
-		$this->settings_text(
-			array(
-				'label'         => esc_html__( 'A textbox sub-field', 'simpleaddon' ),
-				'name'          => 'subtext',
-				'default_value' => 'change me'
-			)
-		);
-		$this->settings_checkbox(
-			array(
-				'label'   => esc_html__( 'A checkbox sub-field', 'simpleaddon' ),
-				'choices' => array(
-					array(
-						'label'         => esc_html__( 'Activate', 'simpleaddon' ),
-						'name'          => 'subcheck',
-						'default_value' => true
-					)
 
-				)
-			)
-		);
+		// get the text field settings from the main field and then render the text field
+		$text_field = $field['args']['text'];
+		$this->settings_text( $text_field );
+
+		// get the checkbox field settings from the main field and then render the checkbox field
+		$checkbox_field = $field['args']['checkbox'];
+		$this->settings_checkbox( $checkbox_field );
 	}
 
 
@@ -316,5 +320,3 @@ class GFSimpleAddOn extends GFAddOn {
 	}
 
 }
-
-new GFSimpleAddOn();
