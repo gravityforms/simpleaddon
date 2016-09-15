@@ -282,6 +282,11 @@ class GFSimpleAddOn extends GFAddOn {
 							),
 						),
 					),
+					array(
+						'label' => esc_html__( 'Simple condition', 'simpleaddon' ),
+						'type'  => 'custom_logic',
+						'name'  => 'custom_logic',
+					),
 				),
 			),
 		);
@@ -303,6 +308,51 @@ class GFSimpleAddOn extends GFAddOn {
 		// get the checkbox field settings from the main field and then render the checkbox field
 		$checkbox_field = $field['args']['checkbox'];
 		$this->settings_checkbox( $checkbox_field );
+	}
+
+
+	public function settings_custom_logic( $field, $echo = true ) {
+
+		$field_name = $field['name'];
+
+		$checkbox_field = array(
+			'name'    => $field_name,
+			'type'    => 'checkbox',
+			'choices' => array(
+				array(
+					'label' => 'Enabled',
+					'name'  => $field_name . '_enabled',
+				),
+			),
+			'onclick' => "if(this.checked){jQuery('#{$field_name}_condition_container').show();} else{jQuery('#{$field_name}_condition_container').hide();}",
+		);
+
+		$is_enabled      = $this->get_setting( $field_name . '_enabled' ) == '1';
+		$container_style = ! $is_enabled ? "style='display:none;'" : '';
+
+		$str = $this->settings_checkbox( $checkbox_field, false );
+		$str .= "<div id='{$field_name}_condition_container' {$container_style}>" .
+		        $str .= $this->simple_condition( $field_name . '_rules' );
+		$str .= '</div>';
+
+		echo $str;
+	}
+
+	/**
+	 * Define which field types can be used for the conditional logic.
+	 *
+	 * @return array
+	 */
+	public function get_conditional_logic_fields() {
+		$form   = $this->get_current_form();
+		$fields = array();
+		foreach ( $form['fields'] as $field ) {
+			if ( $field->is_conditional_logic_supported() ) {
+				$fields[] = array( 'value' => $field->id, 'label' => GFCommon::get_label( $field ) );
+			}
+		}
+
+		return $fields;
 	}
 
 
