@@ -33,6 +33,7 @@ class GFSimpleAddOn extends GFAddOn {
 	public function init() {
 		parent::init();
 		add_filter( 'gform_submit_button', array( $this, 'form_submit_button' ), 10, 2 );
+		add_action( 'gform_after_submission', array( $this, 'after_submission' ), 10, 2 );
 	}
 
 
@@ -284,7 +285,7 @@ class GFSimpleAddOn extends GFAddOn {
 					),
 					array(
 						'label' => esc_html__( 'Simple condition', 'simpleaddon' ),
-						'type'  => 'custom_logic',
+						'type'  => 'custom_logic_type',
 						'name'  => 'custom_logic',
 					),
 				),
@@ -311,35 +312,49 @@ class GFSimpleAddOn extends GFAddOn {
 	}
 
 
-	public function settings_custom_logic( $field, $echo = true ) {
+	// # SIMPLE CONDITION EXAMPLE --------------------------------------------------------------------------------------
 
-		$field_name = $field['name'];
+	/**
+	 * Define the markup for the custom_logic_type type field.
+	 *
+	 * @param array $field The field properties.
+	 * @param bool|true $echo Should the setting markup be echoed.
+	 */
+	public function settings_custom_logic_type( $field, $echo = true ) {
 
+		// Get the setting name.
+		$name = $field['name'];
+
+		// Define the properties for the checkbox to be used to enable/disable access to the simple condition settings.
 		$checkbox_field = array(
-			'name'    => $field_name,
+			'name'    => $name,
 			'type'    => 'checkbox',
 			'choices' => array(
 				array(
-					'label' => 'Enabled',
-					'name'  => $field_name . '_enabled',
+					'label' => esc_html__( 'Enabled', 'simpleaddon' ),
+					'name'  => $name . '_enabled',
 				),
 			),
-			'onclick' => "if(this.checked){jQuery('#{$field_name}_condition_container').show();} else{jQuery('#{$field_name}_condition_container').hide();}",
+			'onclick' => "if(this.checked){jQuery('#{$name}_condition_container').show();} else{jQuery('#{$name}_condition_container').hide();}",
 		);
 
-		$is_enabled      = $this->get_setting( $field_name . '_enabled' ) == '1';
+		// Determine if the checkbox is checked, if not the simple condition settings should be hidden.
+		$is_enabled      = $this->get_setting( $name . '_enabled' ) == '1';
 		$container_style = ! $is_enabled ? "style='display:none;'" : '';
 
-		$str = $this->settings_checkbox( $checkbox_field, false );
-		$str .= "<div id='{$field_name}_condition_container' {$container_style}>" .
-		        $str .= $this->simple_condition( $field_name . '_rules' );
-		$str .= '</div>';
+		// Put together the field markup.
+		$str = sprintf( "%s<div id='%s_condition_container' %s>%s</div>",
+			$this->settings_checkbox( $checkbox_field, false ),
+			$name,
+			$container_style,
+			$this->simple_condition( $name )
+		);
 
 		echo $str;
 	}
 
 	/**
-	 * Define which field types can be used for the conditional logic.
+	 * Build an array of choices containing fields which are compatible with conditional logic.
 	 *
 	 * @return array
 	 */
@@ -348,11 +363,84 @@ class GFSimpleAddOn extends GFAddOn {
 		$fields = array();
 		foreach ( $form['fields'] as $field ) {
 			if ( $field->is_conditional_logic_supported() ) {
-				$fields[] = array( 'value' => $field->id, 'label' => GFCommon::get_label( $field ) );
+				$inputs = $field->get_entry_inputs();
+
+				if ( $inputs ) {
+					$choices = array();
+
+					foreach ( $inputs as $input ) {
+						if ( rgar( $input, 'isHidden' ) ) {
+							continue;
+						}
+						$choices[] = array(
+							'value' => $input['id'],
+							'label' => GFCommon::get_label( $field, $input['id'], true )
+						);
+					}
+
+					if ( ! empty( $choices ) ) {
+						$fields[] = array( 'choices' => $choices, 'label' => GFCommon::get_label( $field ) );
+					}
+
+				} else {
+					$fields[] = array( 'value' => $field->id, 'label' => GFCommon::get_label( $field ) );
+				}
+
 			}
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * Evaluate the conditional logic.
+	 *
+	 * @param array $form The form currently being processed.
+	 * @param array $entry The entry currently being processed.
+	 *
+	 * @return bool
+	 */
+	public function is_custom_logic_met( $form, $entry ) {
+		$settings = $this->get_form_settings( $form );
+
+		$name       = 'custom_logic';
+		$is_enabled = rgar( $settings, $name . '_enabled' );
+
+		if ( ! $is_enabled ) {
+			// The setting is not enabled so we handle it as if the rules are met.
+
+			return true;
+		}
+
+		// Build the logic array to be used by Gravity Forms when evaluating the rules.
+		$logic = array(
+			'logicType' => 'all',
+			'rules'     => array(
+				array(
+					'fieldId'  => rgar( $settings, $name . '_field_id' ),
+					'operator' => rgar( $settings, $name . '_operator' ),
+					'value'    => rgar( $settings, $name . '_value' ),
+				),
+			)
+		);
+
+		return GFCommon::evaluate_conditional_logic( $logic, $form, $entry );
+	}
+
+	/**
+	 * Performing a custom action at the end of the form submission process.
+	 *
+	 * @param array $entry The entry currently being processed.
+	 * @param array $form The form currently being processed.
+	 */
+	public function after_submission( $entry, $form ) {
+
+		// Evaluate the rules configured for the custom_logic setting.
+		$result = $this->is_custom_logic_met( $form, $entry );
+
+		if ( $result ) {
+			// Do something awesome because the rules were met.
+		}
 	}
 
 
