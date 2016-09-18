@@ -401,6 +401,13 @@ class GFSimpleAddOn extends GFAddOn {
 	 * @return bool
 	 */
 	public function is_custom_logic_met( $form, $entry ) {
+		if ( $this->is_gravityforms_supported( '2.0.7.4' ) ) {
+			// Use the helper added in Gravity Forms 2.0.7.4.
+
+			return $this->is_simple_condition_met( 'custom_logic', $form, $entry );
+		}
+
+		// Older version of Gravity Forms, use our own method of validating the simple condition.
 		$settings = $this->get_form_settings( $form );
 
 		$name       = 'custom_logic';
