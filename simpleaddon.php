@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms Simple Add-On
 Plugin URI: http://www.gravityforms.com
 Description: A simple add-on to demonstrate the use of the Add-On Framework
-Version: 2.0
+Version: 2.1
 Author: Rocketgenius
 Author URI: http://www.rocketgenius.com
 
@@ -25,7 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-define( 'GF_SIMPLE_ADDON_VERSION', '2.0' );
+define( 'GF_SIMPLE_ADDON_VERSION', '2.1' );
 
 add_action( 'gform_loaded', array( 'GF_Simple_AddOn_Bootstrap', 'load' ), 5 );
 
