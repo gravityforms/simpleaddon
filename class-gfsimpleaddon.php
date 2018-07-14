@@ -288,6 +288,11 @@ class GFSimpleAddOn extends GFAddOn {
 						'type'  => 'custom_logic_type',
 						'name'  => 'custom_logic',
 					),
+					array(
+						'label' => esc_html__( 'Field Select', 'simpleaddon' ),
+						'type'  => 'field_select',
+						'name'  => 'my_field',
+					),
 				),
 			),
 		);
