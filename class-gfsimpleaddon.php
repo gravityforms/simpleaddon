@@ -10,7 +10,7 @@ class GFSimpleAddOn extends GFAddOn {
 	protected $_path = 'simpleaddon/simpleaddon.php';
 	protected $_full_path = __FILE__;
 	protected $_title = 'Gravity Forms Simple Add-On';
-	protected $_short_title = 'Simple Add-On';
+	protected $_short_title = 'Simple Demo';
 
 	private static $_instance = null;
 
