@@ -134,7 +134,8 @@ class GFSimpleAddOn extends GFAddOn {
 						'name'              => 'mytextbox',
 						'tooltip'           => esc_html__( 'This is the tooltip', 'simpleaddon' ),
 						'label'             => esc_html__( 'This is the label', 'simpleaddon' ),
-						'type'              => 'text',
+						'type'              => 'textarea',
+						'use_editor' => true,
 						'class'             => 'small',
 						'feedback_callback' => array( $this, 'is_valid_setting' ),
 					)
@@ -154,15 +155,33 @@ class GFSimpleAddOn extends GFAddOn {
 				'title'  => esc_html__( 'Simple Form Settings', 'simpleaddon' ),
 				'fields' => array(
 					array(
-						'label'   => esc_html__( 'My checkbox', 'simpleaddon' ),
-						'type'    => 'checkbox',
-						'name'    => 'enabled',
-						'tooltip' => esc_html__( 'This is the tooltip', 'simpleaddon' ),
-						'choices' => array(
-							array(
-								'label' => esc_html__( 'Enabled', 'simpleaddon' ),
-								'name'  => 'enabled',
+						'name'     => 'my_checkbox_and_text',
+						'label'    => 'Checkbox and Select',
+						'type'     => 'checkbox_and_select',
+						'required' => true,
+						'tooltip'  => 'My Checkbox and Select Field',
+						'checkbox' => array(
+							'label'         => 'Enable',
+							'name'          => 'checkbox_and_select_enabled',
+							'default_value' => '0',
+						),
+						'select'   => array(
+							'name'    => 'checkbox_and_select_option',
+							'choices' => array(
+								array(
+									'value' => 'first',
+									'label' => 'First',
+								),
+								array(
+									'value' => 'second',
+									'label' => 'Second',
+								),
 							),
+							'validation_callback' => function( $field, $value ) {
+								if ( $value !== 'first' ) {
+									$field->set_error( 'This Option must be "First"' );
+								}
+							},
 						),
 					),
 					array(
