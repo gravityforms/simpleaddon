@@ -158,7 +158,6 @@ class GFSimpleAddOn extends GFAddOn {
 						'name'     => 'my_checkbox_and_text',
 						'label'    => 'Checkbox and Select',
 						'type'     => 'checkbox_and_select',
-						'required' => true,
 						'tooltip'  => 'My Checkbox and Select Field',
 						'checkbox' => array(
 							'label'         => 'Enable',
@@ -177,11 +176,6 @@ class GFSimpleAddOn extends GFAddOn {
 									'label' => 'Second',
 								),
 							),
-							'validation_callback' => function( $field, $value ) {
-								if ( $value !== 'first' ) {
-									$field->set_error( 'This Option must be "First"' );
-								}
-							},
 						),
 					),
 					array(
