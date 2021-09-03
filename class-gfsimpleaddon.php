@@ -172,15 +172,12 @@ class GFSimpleAddOn extends GFAddOn {
 						'tooltip' => esc_html__( 'This is the tooltip', 'simpleaddon' ),
 						'choices' => array(
 							array(
-								'label' => esc_html__( 'First Choice', 'simpleaddon' ),
 								'name'  => 'first',
 							),
 							array(
-								'label' => esc_html__( 'Second Choice', 'simpleaddon' ),
 								'name'  => 'second',
 							),
 							array(
-								'label' => esc_html__( 'Third Choice', 'simpleaddon' ),
 								'name'  => 'third',
 							),
 						),
