@@ -175,6 +175,11 @@ class GFSimpleAddOn extends GFAddOn {
 							),
 						),
 					),
+					array(
+						'type' => 'button',
+						'value' => 'This will be ignored',
+						'default_value' => 'should show this',
+					),
 				),
 			),
 		);
